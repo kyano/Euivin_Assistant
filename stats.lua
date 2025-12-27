@@ -1,5 +1,6 @@
 -- Local shortcuts for global functions
 local floor = math.floor
+local ipairs = ipairs
 local max = math.max
 local min = math.min
 local next = next
@@ -43,8 +44,35 @@ local hasteBarColor = CreateColorFromHexString("ff43e023")
 local masteryBarColor = CreateColorFromHexString("ffb622c6")
 local versatilityBarColor = CreateColorFromHexString("ff23abe0")
 
+local function updateStatBar(f, label, value, maxValue)
+    f.label:SetText(statAttrName[label])
+
+    local valueText
+    local percentageSuffix = {
+        ["crit"] = true,
+        ["haste"] = true,
+        ["mastery"] = true,
+        ["versatility"] = true,
+    }
+    if percentageSuffix[label] then
+        value = _G.EuivinStatCache[label]
+        valueText = value .. "%"
+    else
+        valueText = value
+    end
+    f.value:SetText(valueText)
+
+    local width
+    if maxValue == nil then
+        maxValue = 100
+    end
+    width = min(80, max(1, floor((value / maxValue) * 80)))
+    f.bar:SetWidth(width)
+end
+
 local function EuivinInitStats()
     if _G.EuivinStatCache == nil or next(_G.EuivinStatCache) == nil then
+        -- XXX: Wrong indentation by `lua-ts-mode`
         _G.EuivinStatCache = {
             ["mainStat"] = {
                                ["attr"] = 0,
@@ -67,42 +95,36 @@ local function EuivinInitStats()
 
     -- XXX: Wrong indentation by `lua-ts-mode`
     _G.EuivinStat.RegisterCallback(
-    _G.EuivinStat, "EUIVIN_STAT_UPDATED",
+    _G.EuivinStat,
+    "EUIVIN_STAT_UPDATED",
     function()
-        mainStatFrame.label:SetText(statAttrName[_G.EuivinStatCache.mainStat.attr])
-        mainStatFrame.value:SetText(_G.EuivinStatCache.mainStat.stat)
-        mainStatFrame.bar:SetWidth(
-            min(80,
-                max(0,
-                    floor((_G.EuivinStatCache.mainStat.stat / _G.EuivinStatCache.mainStat.max) * 80))))
-
-        critFrame.label:SetText(statAttrName["crit"])
-        critFrame.value:SetText(_G.EuivinStatCache.crit .. "%")
-        critFrame.bar:SetWidth(
-            min(80,
-                max(0,
-                    floor((_G.EuivinStatCache.crit / 100) * 80))))
-
-        hasteFrame.label:SetText(statAttrName["haste"])
-        hasteFrame.value:SetText(_G.EuivinStatCache.haste .. "%")
-        hasteFrame.bar:SetWidth(
-            min(80,
-                max(0,
-                    floor((_G.EuivinStatCache.haste / 100) * 80))))
-
-        masteryFrame.label:SetText(statAttrName["mastery"])
-        masteryFrame.value:SetText(_G.EuivinStatCache.mastery .. "%")
-        masteryFrame.bar:SetWidth(
-            min(80,
-                max(0,
-                    floor((_G.EuivinStatCache.mastery / 100) * 80))))
-
-        versatilityFrame.label:SetText(statAttrName["versatility"])
-        versatilityFrame.value:SetText(_G.EuivinStatCache.versatility .. "%")
-        versatilityFrame.bar:SetWidth(
-            min(80,
-                max(0,
-                    floor((_G.EuivinStatCache.versatility / 100) * 80))))
+        local stats = {
+            {
+                ["frame"] = mainStatFrame,
+                ["label"] = _G.EuivinStatCache.mainStat.attr,
+                ["value"] = _G.EuivinStatCache.mainStat.stat,
+                ["maxValue"] = _G.EuivinStatCache.mainStat.max,
+            },
+            {
+                ["frame"] = critFrame,
+                ["label"] = "crit",
+            },
+            {
+                ["frame"] = hasteFrame,
+                ["label"] = "haste",
+            },
+            {
+                ["frame"] = masteryFrame,
+                ["label"] = "mastery",
+            },
+            {
+                ["frame"] = versatilityFrame,
+                ["label"] = "versatility",
+            },
+        }
+        for _, s in ipairs(stats) do
+            updateStatBar(s.frame, s.label, s.value, s.maxValue)
+        end
     end)
 end
 
@@ -168,6 +190,27 @@ local function EuivinUpdateStats(event, ...)
     end
 end
 
+local function initStatFrame(f, parent, idx, color)
+    f:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, 0 - idx * 13)
+    f:SetSize(80, 13)
+
+    f.label = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    f.label:SetPoint("LEFT")
+    f.label:SetFontHeight(10)
+    f.label:SetTextColor(1, 1, 1)
+
+    f.value = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    f.value:SetPoint("RIGHT")
+    f.value:SetFontHeight(10)
+    f.value:SetTextColor(1, 1, 1)
+
+    f.bar = f:CreateTexture(nil, "BACKGROUND")
+    f.bar:SetPoint("RIGHT")
+    f.bar:SetSize(40, 13)
+    f.bar:SetTexture(LibSharedMedia:Fetch("statusbar", "Clean"))
+    f.bar:SetGradient("HORIZONTAL", color, color)
+end
+
 local hiddenFrame = CreateFrame("Frame")
 hiddenFrame:RegisterEvent("ADDON_LOADED")
 hiddenFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -188,84 +231,36 @@ local statFrame = CreateFrame("Frame", nil, PlayerFrame)
 statFrame:SetPoint("TOPLEFT", PlayerFrame, "BOTTOMLEFT", 12, -5)
 statFrame:SetSize(80, 65)
 statFrame:SetFrameStrata("BACKGROUND")
-statFrame:SetAlpha(0.5)
+statFrame:SetAlpha(0.65)
+
 mainStatFrame = CreateFrame("Frame", nil, statFrame)
-mainStatFrame:SetPoint("TOPLEFT", statFrame, "TOPLEFT", 0, 0)
-mainStatFrame:SetSize(80, 13)
-mainStatFrame.label = mainStatFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-mainStatFrame.label:SetPoint("LEFT")
-mainStatFrame.label:SetFontHeight(10)
-mainStatFrame.label:SetTextColor(1, 1, 1)
-mainStatFrame.value = mainStatFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-mainStatFrame.value:SetPoint("RIGHT")
-mainStatFrame.value:SetFontHeight(10)
-mainStatFrame.value:SetTextColor(1, 1, 1)
-mainStatFrame.bar = mainStatFrame:CreateTexture(nil, "BACKGROUND")
-mainStatFrame.bar:SetPoint("RIGHT")
-mainStatFrame.bar:SetSize(40, 13)
-mainStatFrame.bar:SetTexture(LibSharedMedia:Fetch("statusbar", "Clean"))
-mainStatFrame.bar:SetGradient("HORIZONTAL", mainStatBarColor, mainStatBarColor)
 critFrame = CreateFrame("Frame", nil, statFrame)
-critFrame:SetPoint("TOPLEFT", statFrame, "TOPLEFT", 0, -13)
-critFrame:SetSize(80, 13)
-critFrame.label = critFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-critFrame.label:SetPoint("LEFT")
-critFrame.label:SetFontHeight(10)
-critFrame.label:SetTextColor(1, 1, 1)
-critFrame.value = critFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-critFrame.value:SetPoint("RIGHT")
-critFrame.value:SetFontHeight(10)
-critFrame.value:SetTextColor(1, 1, 1)
-critFrame.bar = critFrame:CreateTexture(nil, "BACKGROUND")
-critFrame.bar:SetPoint("RIGHT")
-critFrame.bar:SetSize(40, 13)
-critFrame.bar:SetTexture(LibSharedMedia:Fetch("statusbar", "Clean"))
-critFrame.bar:SetGradient("HORIZONTAL", critBarColor, critBarColor)
 hasteFrame = CreateFrame("Frame", nil, statFrame)
-hasteFrame:SetPoint("TOPLEFT", statFrame, "TOPLEFT", 0, -26)
-hasteFrame:SetSize(80, 13)
-hasteFrame.label = hasteFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-hasteFrame.label:SetPoint("LEFT")
-hasteFrame.label:SetFontHeight(10)
-hasteFrame.label:SetTextColor(1, 1, 1)
-hasteFrame.value = hasteFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-hasteFrame.value:SetPoint("RIGHT")
-hasteFrame.value:SetFontHeight(10)
-hasteFrame.value:SetTextColor(1, 1, 1)
-hasteFrame.bar = hasteFrame:CreateTexture(nil, "BACKGROUND")
-hasteFrame.bar:SetPoint("RIGHT")
-hasteFrame.bar:SetSize(40, 13)
-hasteFrame.bar:SetTexture(LibSharedMedia:Fetch("statusbar", "Clean"))
-hasteFrame.bar:SetGradient("HORIZONTAL", hasteBarColor, hasteBarColor)
 masteryFrame = CreateFrame("Frame", nil, statFrame)
-masteryFrame:SetPoint("TOPLEFT", statFrame, "TOPLEFT", 0, -39)
-masteryFrame:SetSize(80, 13)
-masteryFrame.label = masteryFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-masteryFrame.label:SetPoint("LEFT")
-masteryFrame.label:SetFontHeight(10)
-masteryFrame.label:SetTextColor(1, 1, 1)
-masteryFrame.value = masteryFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-masteryFrame.value:SetPoint("RIGHT")
-masteryFrame.value:SetFontHeight(10)
-masteryFrame.value:SetTextColor(1, 1, 1)
-masteryFrame.bar = masteryFrame:CreateTexture(nil, "BACKGROUND")
-masteryFrame.bar:SetPoint("RIGHT")
-masteryFrame.bar:SetSize(40, 13)
-masteryFrame.bar:SetTexture(LibSharedMedia:Fetch("statusbar", "Clean"))
-masteryFrame.bar:SetGradient("HORIZONTAL", masteryBarColor, masteryBarColor)
 versatilityFrame = CreateFrame("Frame", nil, statFrame)
-versatilityFrame:SetPoint("TOPLEFT", statFrame, "TOPLEFT", 0, -52)
-versatilityFrame:SetSize(80, 13)
-versatilityFrame.label = versatilityFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-versatilityFrame.label:SetPoint("LEFT")
-versatilityFrame.label:SetFontHeight(10)
-versatilityFrame.label:SetTextColor(1, 1, 1)
-versatilityFrame.value = versatilityFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-versatilityFrame.value:SetPoint("RIGHT")
-versatilityFrame.value:SetFontHeight(10)
-versatilityFrame.value:SetTextColor(1, 1, 1)
-versatilityFrame.bar = versatilityFrame:CreateTexture(nil, "BACKGROUND")
-versatilityFrame.bar:SetPoint("RIGHT")
-versatilityFrame.bar:SetSize(40, 13)
-versatilityFrame.bar:SetTexture(LibSharedMedia:Fetch("statusbar", "Clean"))
-versatilityFrame.bar:SetGradient("HORIZONTAL", versatilityBarColor, versatilityBarColor)
+
+local frames = {
+    {
+        ["frame"] = mainStatFrame,
+        ["color"] = mainStatBarColor,
+    },
+    {
+        ["frame"] = critFrame,
+        ["color"] = critBarColor,
+    },
+    {
+        ["frame"] = hasteFrame,
+        ["color"] = hasteBarColor,
+    },
+    {
+        ["frame"] = masteryFrame,
+        ["color"] = masteryBarColor,
+    },
+    {
+        ["frame"] = versatilityFrame,
+        ["color"] = versatilityBarColor,
+    },
+}
+for i, f in ipairs(frames) do
+    initStatFrame(f.frame, statFrame, i - 1, f.color)
+end
