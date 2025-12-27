@@ -19,10 +19,19 @@ Display small stat bars under the player's portrait.
 [[./Extra/stat.png]]
 
 
-** To-Do lists [0/2]
+*** Range check to target and focused target
+
+Display the range distance between the player and the target unit.
+
+#+ATTR: :width 630px
+#+ATTR_HTML: :width 630px
+[[./Extra/range.png]]
+
+
+** To-Do lists [1/2]
 
 - [ ] Add customization
-- [ ] Target/FocusTarget range check
+- [X] Target/FocusTarget range check
 
 
 ** Dependencies
@@ -43,3 +52,8 @@ Display small stat bars under the player's portrait.
 
 - URL: https://www.curseforge.com/wow/addons/libsharedmedia-3-0
 - License: LGPL v2.1
+
+
+*** LibRangeCheck-3.0
+- URL: https://www.curseforge.com/wow/addons/librangecheck-3-0
+- License: MIT
