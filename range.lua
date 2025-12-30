@@ -26,7 +26,7 @@ local function EuivinRangeHandler(event)
     if event == "EUIVIN_RANGE_UPDATED_TARGET" then
         target = "target"
         frame = targetRangeFrame
-    else
+    else -- event == "EUIVIN_RANGE_UPDATED_FOCUS"
         target = "focus"
         frame = focusRangeFrame
     end

@@ -22,7 +22,6 @@ local UnitStat = UnitStat -- luacheck: globals UnitStat
 -- Libraries
 local LibStub = LibStub -- luacheck: globals LibStub
 local LibSharedMedia = LibStub("LibSharedMedia-3.0")
-LibSharedMedia:Register("statusbar", "Clean", "Interface\\AddOns\\Euivin_Assistant\\Textures\\Statusbar_Clean.blp")
 
 -- Local/session variables
 -- TODO: Localize strings

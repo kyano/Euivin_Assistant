@@ -28,10 +28,22 @@ Display the range distance between the player and the target unit.
 [[./Extra/range.png]]
 
 
-** To-Do lists [1/2]
+*** Track the Great Vault rewards and M+ keystone
+
+Display the M+ keystone and the item levels of the Great Vault. (only for M+ rewards)
+
+#+ATTR: :width 262px
+#+ATTR_HTML: :width 262px
+[[./Extra/mythic.png]]
+
+
+** To-Do lists [3/4]
 
 - [ ] Add customization
 - [X] Target/FocusTarget range check
+- [X] Mythic+ keystone tracker
+- [X] The Great Vault rewards for Mythic+
+- [ ] The Great Vault rewards for Delves
 
 
 ** Dependencies
