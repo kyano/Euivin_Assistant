@@ -37,7 +37,7 @@ Display the M+ keystone and the item levels of the Great Vault. (only for M+ rew
 [[./Extra/mythic.png]]
 
 
-** To-Do lists [3/4]
+** To-Do lists [3/5]
 
 - [ ] Add customization
 - [X] Target/FocusTarget range check

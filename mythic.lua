@@ -1,6 +1,7 @@
 local _, ns = ...
 
 -- Local shortcuts for global functions
+local _G = _G
 local floor = math.floor
 local ipairs = ipairs
 local min = math.min
@@ -19,6 +20,7 @@ local LibStub = LibStub -- luacheck: globals LibStub
 
 -- Local/session variables
 local util = ns.util
+local data = ns.data
 local mythicFrame, keystoneFrame, rewardsFrame
 local startColor = CreateColorFromHexString("ff00ff16")
 local endColor = CreateColorFromHexString("ff7bacff")
@@ -92,7 +94,7 @@ local function EuivinInitMythic()
         "EUIVIN_MYTHIC_REWARDS",
     }
     for _, e in ipairs(events) do
-        _G.EuivinMythic.RegisterCallback(_G.EuivinMythic, e, EuivinMythicHandler, e)
+        _G.EuivinMythic:RegisterCallback(e, EuivinMythicHandler, e)
     end
 end
 
@@ -152,24 +154,24 @@ local function EuivinGetRewards()
 
         local difficultyID = C_WeeklyRewards.GetDifficultyIDForActivityTier(r.activityTierID)
         if difficultyID == 2 or difficultyID == 24 then
-            if _G.EuivinMythicCache.rewards[i] ~= ns.data.MythicRewards[1] then
-                _G.EuivinMythicCache.rewards[i] = ns.data.MythicRewards[1]
+            if _G.EuivinMythicCache.rewards[i] ~= data.MythicRewards[1] then
+                _G.EuivinMythicCache.rewards[i] = data.MythicRewards[1]
                 updated = true
             end
         else
             if r.level > 10 then
-                if _G.EuivinMythicCache.rewards[i] ~= ns.data.MythicRewards[11] then
-                    _G.EuivinMythicCache.rewards[i] = ns.data.MythicRewards[11]
+                if _G.EuivinMythicCache.rewards[i] ~= data.MythicRewards[11] then
+                    _G.EuivinMythicCache.rewards[i] = data.MythicRewards[11]
                     updated = true
                 end
             elseif r.level == 0 then
-                if _G.EuivinMythicCache.rewards[i] ~= ns.data.MythicRewards[2] then
-                    _G.EuivinMythicCache.rewards[i] = ns.data.MythicRewards[2]
+                if _G.EuivinMythicCache.rewards[i] ~= data.MythicRewards[2] then
+                    _G.EuivinMythicCache.rewards[i] = data.MythicRewards[2]
                     updated = true
                 end
             else
-                if _G.EuivinMythicCache.rewards[i] ~= ns.data.MythicRewards[r.level + 1] then
-                    _G.EuivinMythicCache.rewards[i] = ns.data.MythicRewards[r.level + 1]
+                if _G.EuivinMythicCache.rewards[i] ~= data.MythicRewards[r.level + 1] then
+                    _G.EuivinMythicCache.rewards[i] = data.MythicRewards[r.level + 1]
                     updated = true
                 end
             end
@@ -182,7 +184,7 @@ local function EuivinGetRewards()
     local runs = 0
     local history = C_MythicPlus.GetRunHistory(false, true)
     for _, r in ipairs(history) do
-        if r.level >= 10 then
+        if r.level >= 10 then -- Replace `10' wioth a predefined constant.
             runs = runs + 1
         end
         if runs >= 8 then

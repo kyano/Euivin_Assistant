@@ -88,7 +88,7 @@ ns.util.ExpandFrame = function(f)
         end
     end
 
-    f:SetHeight(14 * shown)
+    f:SetHeight((14 * shown) + (shown - 1))
 end
 
 ns.util.ProgressBar = function(parent, startColor, endColor)

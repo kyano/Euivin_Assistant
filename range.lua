@@ -1,4 +1,5 @@
 -- Local shortcuts for global functions
+local _G = _G
 local ceil = math.ceil
 local ipairs = ipairs
 
@@ -77,7 +78,7 @@ local function EuivinInitRange()
         "EUIVIN_RANGE_UPDATED_FOCUS",
     }
     for _, e in ipairs(events) do
-        _G.EuivinRange.RegisterCallback(_G.EuivinRange, e, EuivinRangeHandler, e)
+        _G.EuivinRange:RegisterCallback(e, EuivinRangeHandler, e)
     end
 end
 

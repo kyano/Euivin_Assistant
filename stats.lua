@@ -1,4 +1,5 @@
 -- Local shortcuts for global functions
+local _G = _G
 local floor = math.floor
 local ipairs = ipairs
 local max = math.max
@@ -92,39 +93,37 @@ local function EuivinInitStats()
         _G.EuivinStat.callbacks = LibStub("CallbackHandler-1.0"):New(_G.EuivinStat)
     end
 
-    -- XXX: Wrong indentation by `lua-ts-mode`
-    _G.EuivinStat.RegisterCallback(
-    _G.EuivinStat,
-    "EUIVIN_STAT_UPDATED",
-    function()
-        local stats = {
-            {
-                ["frame"] = mainStatFrame,
-                ["label"] = _G.EuivinStatCache.mainStat.attr,
-                ["value"] = _G.EuivinStatCache.mainStat.stat,
-                ["maxValue"] = _G.EuivinStatCache.mainStat.max,
-            },
-            {
-                ["frame"] = critFrame,
-                ["label"] = "crit",
-            },
-            {
-                ["frame"] = hasteFrame,
-                ["label"] = "haste",
-            },
-            {
-                ["frame"] = masteryFrame,
-                ["label"] = "mastery",
-            },
-            {
-                ["frame"] = versatilityFrame,
-                ["label"] = "versatility",
-            },
-        }
-        for _, s in ipairs(stats) do
-            updateStatBar(s.frame, s.label, s.value, s.maxValue)
-        end
-    end)
+    _G.EuivinStat:RegisterCallback(
+        "EUIVIN_STAT_UPDATED",
+        function()
+            local stats = {
+                {
+                    ["frame"] = mainStatFrame,
+                    ["label"] = _G.EuivinStatCache.mainStat.attr,
+                    ["value"] = _G.EuivinStatCache.mainStat.stat,
+                    ["maxValue"] = _G.EuivinStatCache.mainStat.max,
+                },
+                {
+                    ["frame"] = critFrame,
+                    ["label"] = "crit",
+                },
+                {
+                    ["frame"] = hasteFrame,
+                    ["label"] = "haste",
+                },
+                {
+                    ["frame"] = masteryFrame,
+                    ["label"] = "mastery",
+                },
+                {
+                    ["frame"] = versatilityFrame,
+                    ["label"] = "versatility",
+                },
+            }
+            for _, s in ipairs(stats) do
+                updateStatBar(s.frame, s.label, s.value, s.maxValue)
+            end
+        end)
 end
 
 local function EuivinUpdateStats(event, ...)
