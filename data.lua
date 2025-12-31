@@ -17,3 +17,14 @@ ns.data.MythicRewards = {
     704,
     707,
 }
+
+ns.data.DelveRewards = {
+    668,
+    671,
+    675,
+    678,
+    681,
+    688,
+    691,
+    694,
+}

@@ -61,9 +61,23 @@ ns.util.WA_Utf8Sub = function(input, size)
     return output
 end
 
-ns.util.CreateCategoryFrame = function(title)
-    local f = CreateFrame("Frame", nil, UIParent)
-    f:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 3, -3)
+ns.util.CreateCategoryFrame = function(title, name, upper)
+    if upper == nil then
+        upper = UIParent
+    end
+    local relativePoint, offsetX, offsetY
+    if upper ~= UIParent then
+        relativePoint = "BOTTOMLEFT"
+        offsetX = 0
+        offsetY = -16
+    else
+        relativePoint = "TOPLEFT"
+        offsetX = 3
+        offsetY = -3
+    end
+
+    local f = CreateFrame("Frame", name, UIParent)
+    f:SetPoint("TOPLEFT", upper, relativePoint, offsetX, offsetY)
     f:SetSize(176, 0)
     f:SetFrameStrata("BACKGROUND")
 

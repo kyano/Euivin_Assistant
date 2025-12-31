@@ -9,18 +9,18 @@ local next = next
 
 -- Wow APIs
 local C_MythicPlus = C_MythicPlus -- luacheck: globals C_MythicPlus
+local C_WeeklyRewards = C_WeeklyRewards -- luacheck: globals C_WeeklyRewards
 local CreateColorFromHexString = CreateColorFromHexString -- luacheck: globals CreateColorFromHexString
 local CreateFrame = CreateFrame -- luacheck: globals CreateFrame
 local GetRealZoneText = GetRealZoneText -- luacheck: globals GetRealZoneText
 local strlenutf8 = strlenutf8 -- luacheck: globals strlenutf8
-local C_WeeklyRewards = C_WeeklyRewards -- luacheck: globals C_WeeklyRewards
 
 -- Libraries
 local LibStub = LibStub -- luacheck: globals LibStub
 
 -- Local/session variables
-local util = ns.util
 local data = ns.data
+local util = ns.util
 local mythicFrame, keystoneFrame, rewardsFrame
 local startColor = CreateColorFromHexString("ff00ff16")
 local endColor = CreateColorFromHexString("ff7bacff")
@@ -139,7 +139,7 @@ local function EuivinGetKeystone()
     end
 end
 
-local function EuivinGetRewards()
+local function EuivinGetMythicRewards()
     local updated = false
 
     -- Rewards
@@ -237,12 +237,12 @@ hiddenFrame:SetScript(
             return
         end
         -- event == all others...
-        EuivinGetRewards()
+        EuivinGetMythicRewards()
     end)
 
 -- XXX: Is it better to move these to a separated XML file?
 -- TODO: Localize strings
-mythicFrame = util.CreateCategoryFrame("쐐기")
+mythicFrame = util.CreateCategoryFrame("쐐기", "EuivinMythicFrame")
 keystoneFrame = util.ProgressBar(mythicFrame, startColor, endColor)
 rewardsFrame = util.ProgressBar(mythicFrame, startColor, endColor)
 rewardsFrame:Show()
