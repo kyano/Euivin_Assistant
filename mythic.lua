@@ -8,11 +8,11 @@ local min = math.min
 local next = next
 
 -- Wow APIs
+local C_ChallengeMode = C_ChallengeMode -- luacheck: globals C_ChallengeMode
 local C_MythicPlus = C_MythicPlus -- luacheck: globals C_MythicPlus
 local C_WeeklyRewards = C_WeeklyRewards -- luacheck: globals C_WeeklyRewards
 local CreateColorFromHexString = CreateColorFromHexString -- luacheck: globals CreateColorFromHexString
 local CreateFrame = CreateFrame -- luacheck: globals CreateFrame
-local GetRealZoneText = GetRealZoneText -- luacheck: globals GetRealZoneText
 local strlenutf8 = strlenutf8 -- luacheck: globals strlenutf8
 
 -- Libraries
@@ -62,6 +62,9 @@ local function EuivinMythicHandler(event)
     end
 
     local rewardsText = ""
+    if C_WeeklyRewards.CanClaimRewards() then
+        rewardsFrame.value:SetText(rewardsText)
+    end
     for i, ilvl in ipairs(_G.EuivinMythicCache.rewards) do
         if ilvl == 0 then
             break
@@ -109,7 +112,7 @@ local function EuivinGetKeystone()
     local updated = false
 
     -- When the keystone is not found
-    local mapID = C_MythicPlus.GetOwnedKeystoneMapID()
+    local mapID = C_MythicPlus.GetOwnedKeystoneChallengeMapID()
     if mapID == nil then
         _G.EuivinMythicCache.keystone = { ["name"] = "", ["level"] = 0 }
         _G.EuivinMythic.callbacks:Fire("EUIVIN_MYTHIC_KEYSTONE")
@@ -117,7 +120,7 @@ local function EuivinGetKeystone()
     end
 
     local name
-    local dungeonName = GetRealZoneText(mapID)
+    local dungeonName = C_ChallengeMode.GetMapUIInfo(mapID)
     if strlenutf8(dungeonName) > 10 then
         name = util.WA_Utf8Sub(dungeonName, 10) .. "..."
     else

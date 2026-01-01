@@ -37,7 +37,7 @@ Display the M+ keystone and the item levels of the Great Vault. (only for M+ rew
 [[./Extra/mythic.png]]
 
 
-** To-Do lists [4/6]
+** To-Do lists [5/7]
 
 - [ ] Add customization
 - [X] Target/FocusTarget range check
@@ -45,6 +45,7 @@ Display the M+ keystone and the item levels of the Great Vault. (only for M+ rew
 - [X] The Great Vault rewards for Mythic+
 - [X] The Great Vault rewards for Delves
 - [ ] Support localization
+- [X] Crests for item upgrade
 
 
 ** Dependencies

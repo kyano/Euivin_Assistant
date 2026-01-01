@@ -4,6 +4,7 @@ local _, ns = ...
 local _G = _G
 local floor = math.floor
 local ipairs = ipairs
+local next = next
 
 -- Wow APIs
 local C_MythicPlus = C_MythicPlus -- luacheck: globals C_MythicPlus
@@ -35,6 +36,9 @@ local function EuivinDelveHandler()
     end
 
     local rewardsText = ""
+    if C_WeeklyRewards.CanClaimRewards() then
+        rewardsFrame.value:SetText(rewardsText)
+    end
     for i, ilvl in ipairs(_G.EuivinDelveCache.rewards) do
         if ilvl == 0 then
             break
@@ -133,7 +137,7 @@ hiddenFrame:SetScript(
 
 -- XXX: Is it better to move these to a separated XML file?
 -- TODO: Localize strings
-local delveFrame = util.CreateCategoryFrame("구렁", nil, "EuivinMythicFrame")
+local delveFrame = util.CreateCategoryFrame("구렁", "EuivinDelveFrame", "EuivinMythicFrame")
 rewardsFrame = util.ProgressBar(delveFrame, startColor, endColor)
 rewardsFrame:Show()
 util.ExpandFrame(delveFrame)

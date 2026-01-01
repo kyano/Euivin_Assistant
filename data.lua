@@ -28,3 +28,10 @@ ns.data.DelveRewards = {
     691,
     694,
 }
+
+ns.data.Crests = {
+    3284,
+    3286,
+    3288,
+    3290,
+}
