@@ -6,7 +6,6 @@ local UIParent = UIParent -- luacheck: globals UIParent
 local LibStub = LibStub -- luacheck: globals LibStub
 local LibSharedMedia = LibStub("LibSharedMedia-3.0")
 LibSharedMedia:Register("statusbar", "Clean", "Interface\\AddOns\\Euivin_Assistant\\Textures\\Statusbar_Clean.blp")
-LibSharedMedia:Register("statusbar", "Skyline", "Interface\\AddOns\\Euivin_Assistant\\Textures\\bar_skyline.tga")
 
 if _G.Euivin == nil then
     _G.Euivin = {}

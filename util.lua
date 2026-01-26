@@ -133,7 +133,7 @@ ns.util.ProgressBar = function(parent, startColor, endColor)
   f.bar = f:CreateTexture(nil, "ARTWORK")
   f.bar:SetPoint("LEFT")
   f.bar:SetSize(176, 14)
-  f.bar:SetTexture(LibSharedMedia:Fetch("statusbar", "Skyline"))
+  f.bar:SetTexture(LibSharedMedia:Fetch("statusbar", "Clean"))
   f.bar:SetGradient("HORIZONTAL", startColor, endColor)
 
   f:Hide()
