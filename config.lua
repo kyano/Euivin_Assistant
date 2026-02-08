@@ -5,13 +5,10 @@ local CreateFrame = CreateFrame -- luacheck: globals CreateFrame
 local MinimalSliderWithSteppersMixin = MinimalSliderWithSteppersMixin -- luacheck: globals MinimalSliderWithSteppersMixin, no max line length
 local Settings = Settings -- luacheck: globals Settings
 
--- Libraries
-
-
 -- Local/session variables
 local util = ns.util
 
--- `Euivin-Settings' is from SavedVariables
+-- `EuivinConfig' is from SavedVariables
 -- luacheck: globals EuivinConfig
 
 local function EuivinInitConfig()
@@ -46,7 +43,7 @@ local function EuivinInitConfig()
     EuivinConfig.Profession = true
   end
 
-  local category, layout = Settings.RegisterVerticalLayoutCategory("Euivin Assistant")
+  local category, layout = Settings.RegisterVerticalLayoutCategory("EuivinChan Assistant")
 
   local mythicCheckboxSetting = Settings.RegisterAddOnSetting(
     category,
@@ -141,7 +138,7 @@ local function EuivinInitConfig()
     "Enable UI Scale",
     false
   )
-  local uiScaleSliderOption = Settings.CreateSliderOptions(1, 64, 1)
+  local uiScaleSliderOption = Settings.CreateSliderOptions(10, 64, 1)
   local uiScaleSliderSetting = Settings.RegisterProxySetting(
     category,
     "EUIVIN_UISCALE_FACTOR",
@@ -163,15 +160,18 @@ local function EuivinInitConfig()
   )
   local uiScaleInitializer = util.CreateSettingsCheckboxSliderInitializer(
     uiScaleCheckboxSetting,
-    "Enable UI Scale",
-    "Toggle whether to use UI Scale." ..
+    "UI Scale",
+    "Enable UI Scaling." ..
     "\n\n|cffff0000" ..
     "You must reload the UI after changing this." ..
     "|r",
     uiScaleSliderSetting,
     uiScaleSliderOption,
     "UI Scale factor",
-    "UI Scale factor in percentage."
+    "UI Scale factor in percentage." ..
+    "\n\n|cffff0000" ..
+    "You must reload the UI after changing this." ..
+    "|r"
   )
   layout:AddInitializer(uiScaleInitializer)
 
@@ -221,5 +221,6 @@ hiddenFrame:SetScript(
   function(_, _, loadedAddon)
     if loadedAddon == addonName then
       EuivinInitConfig()
+      hiddenFrame:UnregisterEvent("ADDON_LOADED")
     end
 end)
